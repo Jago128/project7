@@ -13,7 +13,7 @@ public class ArrayListProject4 {
 		ArrayList <Persona> p=new ArrayList <Persona>();
 		int menu;
 		menu=menu();
-		
+
 		do {
 			switch (menu) {
 
@@ -61,7 +61,32 @@ public class ArrayListProject4 {
 	public static double getIMC_withPos(ArrayList <Persona> p, int pos) {
 		return ((Gordi)p.get(pos)).getM().get(pos).getWeight()/( ((Gordi)p.get(pos)).getHeight())*((Gordi)p.get(pos)).getHeight();
 	}
-	
+
+	public static String clasificacionGordis(double imc) {
+		String clasificacion = "";
+
+		if (imc < 16) {
+			clasificacion = "Infrapeso: Delgadez Severa";
+		} else if (imc < 17) {
+			clasificacion = "Infrapeso: Delgadez moderada";
+		} else if (imc < 18.5) {
+			clasificacion = "Infrapeso: Delgadez aceptable";
+		} else if (imc < 25) {
+			clasificacion = "Peso Normal";
+		} else if (imc < 30) {
+			clasificacion = "Sobrepeso";
+		} else if (imc < 35) {
+			clasificacion = "Obeso: Tipo I";
+		} else if (imc < 40) {
+			clasificacion = "Obeso: Tipo II";
+		} else {
+			clasificacion = "Obeso: Tipo III";
+		}
+
+		return clasificacion;
+	}
+
+
 	public static double getDiffMed(ArrayList <Persona> p, int pos, double lastWeight) {
 		double weight=0;
 		for (int i=0;i<((Gordi)p.get(pos)).getM().size();i++) {
@@ -75,7 +100,7 @@ public class ArrayListProject4 {
 		}
 		return weight;
 	}
-	
+
 	public static void add(ArrayList <Persona> p) {
 		String choice, name, addMore;
 		boolean cont=true;
@@ -156,7 +181,7 @@ public class ArrayListProject4 {
 		if (pos!=-1) {
 			LocalDate date;
 			double weight, diffLast, diff;
-			
+
 			m.addAll(((Gordi)p.get(pos)).getM());
 			System.out.println("Año de nacimiento: "+p.get(pos).getBirthDate());
 			System.out.println("Altura: "+((Gordi)p.get(pos)).getHeight());
@@ -191,8 +216,39 @@ public class ArrayListProject4 {
 	}
 
 	public static void statGordis(ArrayList <Persona> p) {
-		String classification;
+		ArrayList<PersonaGordiImc> g = new ArrayList<>();
+		String classif;
 		double imc, height;
 		int index=0;
+		boolean exists = false;
+		
+		for (Persona gordi:p) {
+			if (gordi instanceof Gordi) {
+				height=Math.pow(((Gordi)gordi).getHeight(),2);
+				if (height!=0) {
+					imc=((Gordi)gordi).getM().get(0).getWeight()/height;
+					classif = clasificacionGordis(imc);
+					exists = false;
+					for (int i=0;i<g.size()&&!exists;i++) {
+						if (g.get(i).getClassif().equalsIgnoreCase(classif)) {
+							exists=true;
+							index=i;
+						}
+					}
+					if (exists) {
+						g.get(index).setNumero(g.get(index).getNumero()+1);
+					} else {
+						g.add(new PersonaGordiImc(classif,1));
+					}
+				}
+			}
+		}
+		Collections.sort(g);
+		System.out.printf("%-35s %-15s\n","Clasificación","Nº de gordis");
+
+		for (PersonaGordiImc gordi:g) {
+			System.out.printf("%-35s %15d\n",gordi.getClassif(),gordi.getNumero());
+		}
+
 	}
 }
