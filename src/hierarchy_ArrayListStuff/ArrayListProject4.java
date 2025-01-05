@@ -227,8 +227,8 @@ public class ArrayListProject4 {
 				height=Math.pow(((Gordi)gordi).getHeight(),2);
 				if (height!=0) {
 					imc=((Gordi)gordi).getM().get(0).getWeight()/height;
-					classif = clasificacionGordis(imc);
-					exists = false;
+					classif=clasificacionGordis(imc);
+					exists=false;
 					for (int i=0;i<g.size()&&!exists;i++) {
 						if (g.get(i).getClassif().equalsIgnoreCase(classif)) {
 							exists=true;
